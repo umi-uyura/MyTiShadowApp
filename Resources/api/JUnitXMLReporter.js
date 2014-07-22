@@ -48,9 +48,10 @@ function escapeInvalidXmlChars(str) {
      *                  dots rather than spaces (ie "Class.init" not
      *                  "Class init"); default: true
 */
-var JUnitXmlReporter = function(consolidate, useDotNotation) {
+var JUnitXmlReporter = function(consolidate, useDotNotation, onComplete) {
   this.consolidate = consolidate === jasmine.undefined ? true : consolidate;
   this.useDotNotation = useDotNotation === jasmine.undefined ? true : useDotNotation;
+  this.onComplete = onComplete;
 };
 JUnitXmlReporter.finished_at = null; // will be updated after all files have been written
 
@@ -121,8 +122,8 @@ JUnitXmlReporter.prototype = {
     var suites = runner.suites();
     for (var i = 0; i < suites.length; i++) {
       var suite = suites[i];
-      var fileName = 'TEST-' + this.getFullName(suite, true) + '.xml';
-      var output = '<?xml version="1.0" encoding="UTF-8" ?>';
+      var fileName = 'TEST-' + this.getFullName(suite, true);
+      var output = fileName + ' ' + '<?xml version="1.0" encoding="UTF-8" ?>';
       // if we are consolidating, only write out top-level suites
       if (this.consolidate && suite.parentSuite) {
         continue;
@@ -138,9 +139,13 @@ JUnitXmlReporter.prototype = {
         log.test(output);
       }
     }
+    
+    this.onComplete();
+    
     // When all done, make it known on JUnitXmlReporter
     JUnitXmlReporter.finished_at = (new Date()).getTime();
     runner.suites_ = [];
+    log.test("Runner Finished");
   },
 
   getNestedOutput: function(suite) {
