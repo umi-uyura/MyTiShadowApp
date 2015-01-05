@@ -3,7 +3,7 @@
  * Please see the LICENSE file included with this distribution for details.
  */
 
-var logLevels = ['info', 'error', 'debug', 'trace', 'repl', 'warn', 'pass', 'fail', 'test', 'cover'];
+var logLevels = ['info', 'error', 'debug', 'trace', 'repl', 'warn', 'pass', 'fail', 'test', 'cover', 'inspect', 'spy'];
 
 logLevels.forEach(function(level) {
   exports[level] = function() {
@@ -28,6 +28,9 @@ function _write() {
   Array.prototype.forEach.call(arguments, function(msg, i, messages) {
     if (typeof msg === 'object') {
       messages[i] = JSON.stringify(msg, function(key, val) {
+        if (["children", "_module","_children"].indexOf(key) !== -1 && upperCaseLevel === "INSPECT") {
+          return undefined;
+        }
         if (typeof val !== 'object') {
           return val;
         }

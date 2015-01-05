@@ -9,9 +9,13 @@ var log = require("/api/Log");
 var containers = {};
 
 function stack(e) {
+  var p = require("/api/PlatformRequire");
   var container = e.source.__tishadowContainer;
   var app = e.source.__tishadowApp;
-
+  if (require("/api/TiShadow").inspector) {
+    p.addSpy(container, e.source);
+    log.spy(container);
+  }
   if (!containers[app]) {
     containers[app] = {};
   }
@@ -20,6 +24,10 @@ function stack(e) {
 }
 
 function unstack(e) {
+  var p = require("/api/PlatformRequire");
+  if (require("/api/TiShadow").inspector) {
+    p.removeSpy(e.container);
+  }
   delete containers[e.app][e.container];
   return;
 }
@@ -37,14 +45,17 @@ function prepareArgs(a) {
 
 var create = function(fn,a) {
   var args = prepareArgs(a);
-  // exitOnClose hampers the upgrade process so we will prevent it
-  args.exitOnClose = false;
-
   var o = fn(args);
   o.addEventListener('open', stack);
   o.addEventListener('close', function(e) {
     unstack({ app: args.__tishadowApp, container: args.__tishadowContainer });
   });
+  if (require("/api/TiShadow").inspector) {
+    o.addEventListener('focus', function(e) {
+      e.source._api = e.source.apiName;
+        log.inspect(e.source);
+    });
+  }
   return o;
 };
 
