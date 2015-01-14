@@ -6,8 +6,8 @@ MyTiShadowApp is personal customized TiShadow. It includes a module and the libr
 Based on
 --------
 
-* TiShadow 2.6.0
-* Titanium SDK 3.3.0.GA
+* TiShadow 2.7.3
+* Titanium SDK 3.5.0.GA
 
 Add Modules/Libraries
 ---------------------
