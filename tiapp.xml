@@ -188,7 +188,10 @@
     <module platform="iphone" version="0.2.0">yy.logcatcher</module>
     <module platform="iphone" version="1.1.1">ti.compression</module>
     <module platform="android">bencoding.android.tools</module>
-  </modules>
-  <property name="tishadow:version" type="string">2.7.2</property>
-  <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>  
+    <module platform="iphone" version="0.2.1">yy.tidynamicfont</module>
+</modules>
+  <property name="tishadow:version" type="string">2.7.3</property>
+  <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>
+  
+    
 </ti:app>
