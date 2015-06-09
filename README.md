@@ -7,7 +7,7 @@ Based on
 --------
 
 * TiShadow 2.8.2
-* Titanium SDK 3.5.0.GA
+* Titanium SDK 4.0.0.GA
 
 Add Modules/Libraries
 ---------------------
