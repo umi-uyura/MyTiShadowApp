@@ -7,7 +7,7 @@
     <target device="android">true</target>
     <target device="blackberry">false</target>
   </deployment-targets>
-  <sdk-version>4.1.0.GA</sdk-version>
+  <sdk-version>5.0.2.GA</sdk-version>
   <id>com.yydigital.tishadowapp</id>
   <name>TiShadow</name>
   <version>1.0</version>
@@ -183,7 +183,7 @@
   </modules>
   <property name="tishadow:version" type="string">2.8.3</property>
   <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>
-  
-  
+
+
   <property name="ti.android.bug2373.skipAlert" type="bool">true</property>
 </ti:app>
