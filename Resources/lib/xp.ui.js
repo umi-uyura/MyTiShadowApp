@@ -1,20 +1,20 @@
 if (!OS_IOS) {
 
-    var NavigationWindow = function(args) {
+    var NavigationWindow = function (args) {
         this.args = args;
     };
 
-    NavigationWindow.prototype.open = function(params) {
+    NavigationWindow.prototype.open = function (params) {
         params = params || {};
         params.displayHomeAsUp = false;
         return this.openWindow(this.args.window, params);
     };
 
-    NavigationWindow.prototype.close = function(params) {
+    NavigationWindow.prototype.close = function (params) {
         return this.closeWindow(this.args.window, params);
     };
 
-    NavigationWindow.prototype.openWindow = function(window, options) {
+    NavigationWindow.prototype.openWindow = function (window, options) {
         var that = this;
 
         options = options || {};
@@ -27,7 +27,7 @@ if (!OS_IOS) {
         }
 
         if (options.swipeBack !== false) {
-            window.addEventListener('swipe', function(e) {
+            window.addEventListener('swipe', function (e) {
                 if (e.direction === 'right') {
                     that.closeWindow(window, options);
                 }
@@ -35,13 +35,13 @@ if (!OS_IOS) {
         }
 
         if (OS_ANDROID && options.displayHomeAsUp !== false && !window.navBarHidden) {
-            window.addEventListener('open', function() {
+            window.addEventListener('open', function () {
                 var activity = window.getActivity();
                 if (activity) {
                     var actionBar = activity.actionBar;
                     if (actionBar) {
                         actionBar.displayHomeAsUp = true;
-                        actionBar.onHomeIconItemSelected = function() {
+                        actionBar.onHomeIconItemSelected = function () {
                             that.closeWindow(window, options);
                         };
                     }
@@ -52,7 +52,7 @@ if (!OS_IOS) {
         return window.open(options);
     };
 
-    NavigationWindow.prototype.closeWindow = function(window, options) {
+    NavigationWindow.prototype.closeWindow = function (window, options) {
         options = options || {};
 
         if (OS_ANDROID && options.animated !== false) {
@@ -64,9 +64,9 @@ if (!OS_IOS) {
     };
 }
 
-exports.createNavigationWindow = function(args) {
+exports.createNavigationWindow = function (args) {
     var navWin = OS_IOS ? Ti.UI.iOS.createNavigationWindow(args) : new NavigationWindow(args);
-    
+
     if (args && args.id) {
         Alloy.Globals[args.id] = navWin;
     }
@@ -74,8 +74,8 @@ exports.createNavigationWindow = function(args) {
     return navWin;
 };
 
-exports.createWindow = function(args) {
-    
+exports.createWindow = function (args) {
+
     if (OS_IOS) {
         return Ti.UI.createWindow(args);
     } else {
@@ -83,68 +83,89 @@ exports.createWindow = function(args) {
     }
 };
 
-exports.createTextArea = function(args) {
-	var $textArea = Ti.UI.createTextArea(args);
+exports.createTextArea = function (args) {
+    var $textArea = Ti.UI.createTextArea(args);
 
-	if (args.hintText) {
-		$textArea.originalColor = $textArea.color || '#000';
-		if (!$textArea.value) {
-			$textArea.applyProperties({
-				value: $textArea.hintText,
-				color: '#ccc'
-			});
-		}
+    if (args.hintText) {
+        $textArea.originalColor = $textArea.color || '#000';
+        if (!$textArea.value) {
+            $textArea.applyProperties({
+                value: $textArea.hintText,
+                color: '#ccc'
+            });
+        }
 
-		$textArea.addEventListener('focus', function(e){
-			if (e.source.value==e.source.hintText) {
-				e.source.applyProperties({
-					value: '',
-					color: e.source.originalColor
-				});
-			}
-		});
+        $textArea.addEventListener('focus', function (e) {
+            if (e.source.value == e.source.hintText) {
+                e.source.applyProperties({
+                    value: '',
+                    color: e.source.originalColor
+                });
+            }
+        });
 
-		$textArea.addEventListener('blur', function(e){
-			if (!e.source.value) {
-				e.source.applyProperties({
-					value: e.source.hintText,
-					color: '#ccc'
-				});
-			}
-		});
-	}
+        $textArea.addEventListener('blur', function (e) {
+            if (!e.source.value) {
+                e.source.applyProperties({
+                    value: e.source.hintText,
+                    color: '#ccc'
+                });
+            }
+        });
+    }
 
-	return $textArea;
+    return $textArea;
 };
 
 exports.createLabel = function createLabel(args) {
 
-  if (OS_IOS && args.html) {
-    var html = args.html;
+    if (OS_IOS && args.html) {
+        var html = args.html;
 
-    delete args.text;
-    delete args.html;
+        delete args.text;
+        delete args.html;
 
-    var label = Ti.UI.createLabel(args);
-    var ref = label;
+        var label = Ti.UI.createLabel(args);
+        var ref = label;
 
-    var html2as = require('nl.fokkezb.html2as');
+        var html2as = require('nl.fokkezb.html2as');
 
-    html2as(html, function(err, attr) {
+        html2as(html, function (err, attr) {
 
-      if (err) {
-        console.error(err);
+            if (err) {
+                console.error(err);
 
-      } else {
-        ref.attributedString = attr;
-      }
+            } else {
+                ref.attributedString = attr;
+            }
 
-      ref = null;
-    });
+            ref = null;
+        });
 
-    return label;
+        return label;
 
-  } else {
-    return Ti.UI.createLabel(args);
-  }
+    } else {
+        return Ti.UI.createLabel(args);
+    }
+};
+
+// helper
+var isAndroid = Ti.Platform.osname == "android";
+
+/**
+ * Fixes the auto focus on textfield on android
+ */
+exports.createTextField = function (args) {
+    if (isAndroid) {
+        var view = Ti.UI.createTextField(args);
+
+        // fix auto focus
+        view.addEventListener('focus', function focusFix(e) {
+            e.source.blur();
+            e.source.removeEventListener('focus', focusFix);
+        });
+        return view;
+    } else {
+        return Ti.UI.createTextField(args);
+    }
 };
