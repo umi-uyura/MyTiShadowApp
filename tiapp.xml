@@ -180,9 +180,12 @@
     <module platform="android">bencoding.android.tools</module>
     <module platform="iphone" version="0.2.2">yy.tidynamicfont</module>
     <module platform="android" version="0.1.2">net.iamyellow.tiws</module>
-  </modules>
-  <property name="tishadow:version" type="string">2.8.3</property>
+    <module platform="android" version="2.0.4">ti.compression</module>
+</modules>
+  <property name="tishadow:version" type="string">2.8.5</property>
   <property name="ti.android.bug2373.finishfalseroot" type="bool">true</property>
+  
+  
 
 
   <property name="ti.android.bug2373.skipAlert" type="bool">true</property>
